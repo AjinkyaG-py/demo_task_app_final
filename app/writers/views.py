@@ -31,7 +31,7 @@ def add_books_from_landing():
 
         book_number = book_form.book_number.data.strip()
         revision = book_form.revision.data.strip()
-        assigned_writer_name = book_form.writer_name.data.strip()
+        assigned_writer_name = book_form.writer.data.strip()
         
 
         existing_book = db.session.query(Books).filter_by(
