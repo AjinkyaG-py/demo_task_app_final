@@ -127,8 +127,21 @@ These accounts can be used to log in:
 #### Step 1: Create & Assign Project (Role: Techpub Lead)
 * Log in using your **Techpub Lead** credentials.
 * Click **Create Work** on the main navigation menu.
-* Fill in the required **Project Details**.
-* Add book(s) to the project and assign each to a specific writer.
+* Fill in the required **Project Details** with the sample data below:
+
+| Field | Example Value |
+| --- | --- |
+| Network ID | USD002 |
+| Project Name | Project Y |
+| Product Line | SC, FB |
+
+* Add book(s) to the project and assign each to a specific writer:
+
+| Book Number | Revision | Writer |
+| --- | --- | --- |
+| A001 | A | Ajinkya Godbole |
+| A002 | A | Michael Curry |
+
 > **Note:** The created books will **not** appear on the Techpub Lead dashboard at this initial stage.
 
 #### Step 2: Access Assigned Work (Role: Writer)
