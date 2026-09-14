@@ -16,11 +16,18 @@ from flask_login import current_user, login_required
 
 writers_bp = Blueprint('writers', __name__, template_folder='templates', url_prefix="/writers")
 
+def safe_strip(value):
+    if value is None:
+        return None
+    try:
+        return value.strip()
+    except AttributeError:
+        return str(value).strip()
+
 @writers_bp.route('/add_books_from_landing', methods=['GET', 'POST'])
 @login_required
 def add_books_from_landing():
-    project_name_value = request.args.get('project_name') or request.form.get('project_name')
-    project_name = project_name_value.strip() if project_name_value else None
+    project_name = safe_strip(request.args.get('project_name') or request.form.get('project_name'))
     writer_name = current_user.username
     book_form = BookDetailsForm()
 
@@ -84,8 +91,7 @@ def landing():
 
     if request.method == 'POST' and request.form.get('add_book_submit') == 'true':
         if book_form.validate_on_submit():
-            project_name_value = request.form.get('project_name') or request.args.get('project_name')
-            project_name = project_name_value.strip() if project_name_value else None
+            project_name = safe_strip(request.form.get('project_name') or request.args.get('project_name'))
             if not project_name:
                 flash('Project is required to add a book.', 'danger')
                 return redirect(url_for('writers.landing'))
@@ -133,14 +139,10 @@ def landing():
             return redirect(url_for('writers.landing', project_name=project_name))
 
     if transfer_form.validate_on_submit():
-        book_number_value = request.form.get('book_number')
-        book_number = book_number_value.strip() if book_number_value else None
-        revision_value = request.form.get('revision')
-        revision = revision_value.strip() if revision_value else None
-        project_name_value = request.form.get('project_name')
-        project_name = project_name_value.strip() if project_name_value else None
-        status_value = request.form.get('status')
-        status = status_value.strip() if status_value else None
+        book_number = safe_strip(request.form.get('book_number'))
+        revision = safe_strip(request.form.get('revision'))
+        project_name = safe_strip(request.form.get('project_name'))
+        status = safe_strip(request.form.get('status'))
         new_user = transfer_form.writer_name.data.strip()
 
 
@@ -165,8 +167,7 @@ def landing():
         .all()
     )
 
-    project_name_value = request.args.get('project_name')
-    project_name = project_name_value.strip() if project_name_value else None
+    project_name = safe_strip(request.args.get('project_name'))
 
     latest_stage_subquery = (
         db.session.query(
@@ -213,17 +214,12 @@ def writers_movement():
 
     Writer_name = "Ajinkya Godbole"
 
-    book_number_value = request.args.get("book_name")
-    book_number = book_number_value.strip() if book_number_value else None
+    book_number = safe_strip(request.args.get("book_name"))
     print(book_number)
-    revision_value = request.args.get("revision")
-    revision = revision_value.strip() if revision_value else None
-    project_name_value = request.args.get("project_name")
-    project_name = project_name_value.strip() if project_name_value else None
-    writer_name_value = request.args.get("writer")
-    writer_name = writer_name_value.strip() if writer_name_value else None
-    status_value = request.args.get("status")
-    status = status_value.strip() if status_value else None
+    revision = safe_strip(request.args.get("revision"))
+    project_name = safe_strip(request.args.get("project_name"))
+    writer_name = safe_strip(request.args.get("writer"))
+    status = safe_strip(request.args.get("status"))
 
     writers_movement_form = MoveBookToNextStageForm()
 

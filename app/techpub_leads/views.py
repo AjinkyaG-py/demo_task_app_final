@@ -14,6 +14,14 @@ from app import db
 
 techpub_leads_bp = Blueprint('techpub_leads', __name__, template_folder='templates', url_prefix="/techpub_leads")
 
+def safe_strip(value):
+    if value is None:
+        return None
+    try:
+        return value.strip()
+    except AttributeError:
+        return str(value).strip()
+
 @techpub_leads_bp.route('/landing')
 @login_required
 def landing():
@@ -47,9 +55,7 @@ def landing():
         .all()
     )
 
-    project_name = request.args.get('project_name')
-    if project_name is not None:
-        project_name = project_name.strip()
+    project_name = safe_strip(request.args.get('project_name'))
 
     # If no project is selected, redirect to the same route with the first project
     if not project_name and all_projects:
@@ -137,11 +143,9 @@ def create_work():
 def add_books(project_id=None, project_name=None):
 
     if not project_id:
-        project_id_value = request.args.get('project_id') or request.form.get('project_id')
-        project_id = project_id_value.strip() if project_id_value else None
+        project_id = safe_strip(request.args.get('project_id') or request.form.get('project_id'))
     if not project_name:
-        project_name_value = request.args.get('project_name') or request.form.get('project_name')
-        project_name = project_name_value.strip() if project_name_value else None
+        project_name = safe_strip(request.args.get('project_name') or request.form.get('project_name'))
 
     if not project_id and project_name:
         project = db.session.query(Projects.project_id).filter_by(project_name=project_name).first()
@@ -198,10 +202,8 @@ def add_books(project_id=None, project_name=None):
 @techpub_leads_bp.route('/add_books_from_landing', methods=['GET', 'POST'])
 @login_required
 def add_books_from_landing():
-    project_id_value = request.args.get('project_id') or request.form.get('project_id')
-    project_id = project_id_value.strip() if project_id_value else None
-    project_name_value = request.args.get('project_name') or request.form.get('project_name')
-    project_name = project_name_value.strip() if project_name_value else None
+    project_id = safe_strip(request.args.get('project_id') or request.form.get('project_id'))
+    project_name = safe_strip(request.args.get('project_name') or request.form.get('project_name'))
 
     if not project_id and project_name:
         project = db.session.query(Projects.project_id).filter_by(project_name=project_name).first()
@@ -257,18 +259,10 @@ def add_books_from_landing():
 @techpub_leads_bp.route('/techpub_leads_movement', methods=['GET', 'POST'])
 @login_required
 def techpub_leads_movement():
-    book_number = request.args.get("book_name")
-    if book_number is not None:
-        book_number = book_number.strip()
-    revision = request.args.get("revision")
-    if revision is not None:
-        revision = revision.strip()
-    project_name = request.args.get("project_name")
-    if project_name is not None:
-        project_name = project_name.strip()
-    stage_name = request.args.get("status")
-    if stage_name is not None:
-        stage_name = stage_name.strip()
+    book_number = safe_strip(request.args.get("book_name"))
+    revision = safe_strip(request.args.get("revision"))
+    project_name = safe_strip(request.args.get("project_name"))
+    stage_name = safe_strip(request.args.get("status"))
 
     if not book_number or not revision:
         flash("Book details are missing.")
